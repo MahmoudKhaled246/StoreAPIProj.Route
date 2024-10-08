@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Store.Route.Core.Entities;
 using Store.Route.Core.Repositories.Contract;
+using Store.Route.Core.Specifications;
 using Store.Route.Repository.Data.Contexts;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,8 @@ namespace Store.Route.Repository.Repositories
         {
             if (typeof(TEntity) == typeof(Product))
             {
-                return  await _context.Products.Include(p => p.Brand).Include(p => p.Type).FirstOrDefaultAsync(P=>P.Id == id as int?) as TEntity;
+                //return  await _context.Products.Include(p => p.Brand).Include(p => p.Type).FirstOrDefaultAsync(P=>P.Id == id as int?) as TEntity;
+                return  await _context.Products.Where(P => P.Id == id as int?).Include(p => p.Brand).Include(p => p.Type).FirstOrDefaultAsync() as TEntity;
             }
             return await _context.Set<TEntity>().FindAsync(id);
         }
@@ -50,6 +52,21 @@ namespace Store.Route.Repository.Repositories
         public void Delete(TEntity entity)
         {
             _context.Remove(entity);
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).ToListAsync();
+        }
+
+        public async Task<TEntity> GetByIdWithSpecAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).FirstOrDefaultAsync();
+        }
+
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity,TKey> spec)
+        {
+            return SpecificationsEvaluator<TEntity, TKey>.GetQuery(_context.Set<TEntity>(), spec);
         }
     }
 }

@@ -3,6 +3,8 @@ using Store.Route.Core;
 using Store.Route.Core.Dtos.Products;
 using Store.Route.Core.Entities;
 using Store.Route.Core.Services.Contract;
+using Store.Route.Core.Specifications;
+using Store.Route.Core.Specifications.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +24,20 @@ namespace Store.Route.Service.Services.Products
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()            
-        => _mapper.Map<IEnumerable<ProductDto>>(await _unitOfWork.Repository<Product, int>().GetAllAsync());
+
+
+        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
+        {
+            var spec = new ProductSpecifications();
+            return _mapper.Map<IEnumerable<ProductDto>>(await _unitOfWork.Repository<Product, int>().GetAllWithSpecAsync(spec));
+        }
+
 
         public async Task<ProductDto> GetProductById(int id)
         {
-            return _mapper.Map<ProductDto>(await _unitOfWork.Repository<Product, int>().GetByIdAsync(id));
+            var spec = new ProductSpecifications(id);
+
+            return _mapper.Map<ProductDto>(await _unitOfWork.Repository<Product, int>().GetByIdWithSpecAsync(spec));
              
         }
 
