@@ -1,5 +1,7 @@
 ﻿using Store.Route.Core.Dtos.Products;
 using Store.Route.Core.Entities;
+using Store.Route.Core.Helper;
+using Store.Route.Core.Specifications.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace Store.Route.Core.Services.Contract
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetAllProductsAsync();
+        Task<PaginationResponse<ProductDto>> GetAllProductsAsync(ProductSpecParams productSpec);
         Task<IEnumerable<TypeBrandDto>> GetAllTypesAsync();
         Task<IEnumerable<TypeBrandDto>> GetAllBrandsAsync();
 

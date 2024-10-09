@@ -22,6 +22,23 @@ namespace Store.Route.Repository
                 query = query.Where(spec.Criteria);
             }
 
+
+            if (spec.OrderBy is not null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+
+
+            if (spec.OrderByDescending is not null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+
+            if (spec.IsPaginationEnabled)
+            {
+                query = query.Take(spec.Take).Skip(spec.Skip);
+            }
+
             //p=>p.brand
             //p=>p.type
 

@@ -24,7 +24,7 @@ namespace Store.Route.Repository.Repositories
         {
             if (typeof(TEntity) == typeof(Product))
             {
-                return (IEnumerable<TEntity>) await _context.Products.Include(p => p.Brand).Include(p => p.Type).ToListAsync();
+                return (IEnumerable<TEntity>) await _context.Products.OrderBy(P => P.Name).Include(p => p.Brand).Include(p => p.Type).ToListAsync();
             }
            return  await _context.Set<TEntity>().ToListAsync();
         }
@@ -68,5 +68,12 @@ namespace Store.Route.Repository.Repositories
         {
             return SpecificationsEvaluator<TEntity, TKey>.GetQuery(_context.Set<TEntity>(), spec);
         }
+
+        public async Task<int> GetCountAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).CountAsync();     
+        }
+
+        
     }
 }

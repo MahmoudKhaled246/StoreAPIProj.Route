@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Store.Route.Core.Dtos.Products;
+using Store.Route.Core.Entities;
+using Store.Route.Core.Helper;
 using Store.Route.Core.Services.Contract;
+using Store.Route.Core.Specifications.Products;
 
 namespace Store.Route.APIs.Controllers
 {
@@ -16,9 +20,9 @@ namespace Store.Route.APIs.Controllers
         }
 
         [HttpGet] //Get  BaseURL/api/products 
-        public async Task<IActionResult> GetAllProducts() //endpoint
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductSpecParams productSpec) //endpoint
         {
-            var result =  await _productService.GetAllProductsAsync();
+            var result = await _productService.GetAllProductsAsync(productSpec);
 
             return Ok(result); //200   
         }
